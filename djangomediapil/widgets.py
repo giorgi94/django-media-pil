@@ -9,7 +9,7 @@ MEDIA_URL = settings.MEDIA_URL
 
 
 class ImagePILWidget(widgets.TextInput):
-    template_name = 'pymedia/image_widget.html'
+    template_name = 'djangomediapil/image_widget.html'
 
     def url(self, pathway):
         if pathway is None:
@@ -34,6 +34,6 @@ class ImagePILWidget(widgets.TextInput):
 
     class Media:
         css = {
-            'all': ('pymedia/widget.css',)
+            'all': ('djangomediapil/widget.css',)
         }
-        js = ('pymedia/widget.js',)
+        js = ('djangomediapil/widget.js',)

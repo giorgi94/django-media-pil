@@ -5,6 +5,7 @@
 
 .vscode/
 
+media/
 env/
 migrations/
 example/djangomediapil

@@ -19,6 +19,6 @@ setup(
     license='MIT',
     install_requires=[
         'Django>=1.11',
-        'pillow>=5.3.0'
+        'Pillow>=5.3.0'
     ]
 )

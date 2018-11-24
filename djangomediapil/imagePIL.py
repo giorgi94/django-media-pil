@@ -1,6 +1,5 @@
 import os
 import re
-import requests
 
 from PIL import Image
 

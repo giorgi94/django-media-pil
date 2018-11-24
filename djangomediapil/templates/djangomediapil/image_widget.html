@@ -1,0 +1,73 @@
+<div class="pil-container">
+
+
+    <div class="pil-input-container">
+
+        <input
+            data-url="{{ MEDIA_URL }}"
+            type="{{ widget.type }}"
+            name="{{ widget.name }}-pathway"
+            class="vTextField"
+            {% if widget.value.pathway %}value="{{ widget.value.pathway }}" {% endif %}
+            {% include "django/forms/widgets/attrs.html" %}
+            onchange="changeURL(event)"/>
+
+        <label style="display: none;" for="{{widget.attrs.id}}-upload" class="pil-upload-btn">
+            <span>Upload</span>
+        </label>
+
+        <button type="button" class="media-browser-btn" onclick="openMediaManager('{{widget.attrs.id}}')">
+            <svg viewBox="0 0 1024 960" style="margin-top: 4px; width: 16px;height: auto; fill:#595959;">
+                <path
+                    path-name="browse"
+                    d="M 928,64 512,64 480,0 128,0 64,128 l 896,0 z m -23.66,576 74.86,0 44.8,-448 -1024,0 64,640 484.08,0 C 443.198,794.224 368,693.734 368,576 368,426.018 490.018,304 640,304 c 149.98,0 272,122.018 272,272 0,21.678 -2.622,43.15 -7.66,64 z M 1002.996,849.75 804.5,675.058 C 821.954,646.138 832,612.244 832,576 832,469.96 746.04,384 640,384 c -106.04,0 -192,85.96 -192,192 0,106.04 85.96,192 192,192 36.244,0 70.138,-10.046 99.058,-27.5 L 913.75,938.996 c 22.962,26.678 62.118,28.14 87.006,3.252 l 5.492,-5.492 c 24.888,-24.888 23.426,-64.044 -3.252,-87.006 z M 640,700 c -68.484,0 -124,-55.516 -124,-124 0,-68.484 55.516,-124 124,-124 68.484,0 124,55.516 124,124 0,68.484 -55.516,124 -124,124 z"
+                    id="path117"
+                    inkscape:connector-curvature="0" />
+            </svg>
+        </button>
+
+        <input hidden id="{{widget.attrs.id}}-upload"
+        type="file"
+        name="{{ widget.name }}_file"
+        data-url="{{ MEDIA_URL }}"
+        onchange="previewUpload(event, '{{upload_to}}')">
+
+        <input hidden type="text" name="{{ widget.name }}_file-upload_to" value="{{upload_to}}">
+
+        <br clear="both">
+    </div>
+
+    <textarea
+        hidden
+        id="{{widget.attrs.id}}-json"
+        type="{{ widget.type }}"
+        name="{{ widget.name }}"
+        class="vTextField"
+        required/>{{ json |safe }}</textarea>
+
+    <div class="pil-img-box box" {% if not widget.value.pathway %} style="display: none" {% endif %}>
+        <div id="{{widget.attrs.id}}-container" class="pil-img" onclick="imgClicked(event)">
+            <div id="{{widget.attrs.id}}-rect" class="pil-rect"></div>
+            <img
+                id="{{widget.attrs.id}}-img"
+                src="{% if widget.value.pathway %}{{ widget.value.url }} {% endif %}"
+                onload="imgLoaded(event)"
+                alt="">
+            <div
+                id="{{widget.attrs.id}}-img-point"
+                class="image-crop-point"
+                style="left: {{ widget.value.point.0 }}%; top: {{ widget.value.point.1 }}%;"></div>
+        </div>
+    </div>
+</div>
+
+<style media="screen">
+    .pil-rect {
+        position: absolute;
+        /* width: 200px; */
+        /* height: 200px; */
+        /* border: 1px dashed #fff; */
+        left: 5px;
+        top: 5px;
+    }
+</style>

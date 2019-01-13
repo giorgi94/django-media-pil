@@ -38,7 +38,7 @@ class ImagePIL:
         )
         return (int(p * from_size[0]), int(p * from_size[1]))
 
-    def get_fit_size(self, from_size, to_size):
+    def get_contain_size(self, from_size, to_size):
         p = min(
             to_size[0] / from_size[0],
             to_size[1] / from_size[1]
@@ -103,11 +103,11 @@ class ImagePIL:
             return (True, savepath)
         return (False,)
 
-    def fit(self, size, savepath=None, overwrite=True):
+    def contain(self, size, savepath=None, overwrite=True):
         with Image.open(self.path) as img:
 
             if savepath is None:
-                savepath = self.default_save_path(size=size, method='fit')
+                savepath = self.default_save_path(size=size, method='contain')
 
             size = normilize_size(size, img)
 
@@ -115,8 +115,8 @@ class ImagePIL:
                 if os.path.isfile(savepath):
                     return (True, savepath)
 
-            fit_size = self.get_fit_size(img.size, size)
-            img = img.resize(fit_size, Image.ANTIALIAS)
+            contain_size = self.get_contain_size(img.size, size)
+            img = img.resize(contain_size, Image.ANTIALIAS)
 
             assure_path_exists(savepath)
 
@@ -126,51 +126,9 @@ class ImagePIL:
             return (True, savepath)
         return (False,)
 
-    def fill(self, size, color=(255, 255, 255), savepath=None, overwrite=True):
-        with Image.open(self.path) as img:
-
-            if savepath is None:
-                savepath = self.default_save_path(size=size, method='fill')
-
-            size = normilize_size(size, img)
-
-            if not overwrite:
-                if os.path.isfile(savepath):
-                    return (True, savepath)
-
-            fit_size = self.get_fit_size(img.size, size)
-            img = img.resize(fit_size, Image.ANTIALIAS)
-
-            assure_path_exists(savepath)
-
-            nsize = (
-                max(fit_size[0], size[0]),
-                max(fit_size[1], size[1]),
-            )
-            new_img = Image.new('RGB', nsize, color)
-
-            if img.mode == 'RGBA':
-                background = Image.new(img.mode[:-1], img.size, color)
-                background.paste(img, img.split()[-1])
-                img = background
-
-            new_img.paste(img, (
-                (nsize[0] - fit_size[0]) // 2,
-                (nsize[1] - fit_size[1]) // 2)
-            )
-
-            if savepath.endswith('.png'):
-                savepath = savepath.replace('.png', '.jpg')
-
-            new_img.save(savepath, 'JPEG',
-                         subsampling=0, quality=self.quality, optimize=True)
-
-            return (True, savepath)
-        return (False,)
-
 
 if __name__ == '__main__':
 
     img = ImagePIL(os.path.abspath('img.jpg'))
-    img.fit((300, 230))
+    img.contain((300, 230))
     img.cover((300, 230), point=(50, 10))

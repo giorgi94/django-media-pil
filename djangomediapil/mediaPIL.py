@@ -108,6 +108,6 @@ class MediaPIL(ImagePIL):
 if __name__ == '__main__':
     # from apps.pymedia.mediaPIL import MediaPIL
     img = MediaPIL('img.jpg')
-    # img.fit((300, 230))
+    # img.contain((300, 230))
     # img.cover((300, 230), point=(50, 70))
     # print(getattr(img, 'path'))

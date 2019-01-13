@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(
     name='django-media-pil',
-    version='0.2',
+    version='0.3',
     packages=['djangomediapil'],
     description='Simple widget for image manipulations by pillow in the Django Admin',
     include_package_data=True,

@@ -1,7 +1,10 @@
 import os
 import json
-from .imagePIL import (
-    ImagePIL, normilize_size)
+# from .imagePIL import (
+#     ImagePIL, normilize_size)
+
+import pycrop
+
 from django.conf import settings
 
 BASE_DIR = settings.BASE_DIR
@@ -9,7 +12,7 @@ MEDIA_DIR = settings.MEDIA_ROOT
 MEDIA_URL = settings.MEDIA_URL
 
 
-def reverse(path, method, size, point=None):
+def reverse(path, size, method):
     basename = os.path.basename(path)
     filename, ext = os.path.splitext(basename)
     path = path.replace(MEDIA_DIR, '')
@@ -17,11 +20,7 @@ def reverse(path, method, size, point=None):
     if not path.startswith('/'):
         path = '/' + path
 
-    if point is None:
-        point = (50, 50)
-
     path = os.path.dirname(path)
-    point = "%dx%d" % point
 
     if None not in size:
         size = "w%dh%d" % size
@@ -30,22 +29,45 @@ def reverse(path, method, size, point=None):
     else:
         size = "w%d" % size[0]
 
-    return f'__thumbs__/{method}/{size}{path}/{filename}{ext}'
+    return os.path.join(
+        f'__thumbs__/{method}/{size}{path}', f'{filename}{ext}')
 
 
-class MediaPIL(ImagePIL):
+class Methods:
 
-    BASE_DIR = BASE_DIR
-    MEDIA_DIR = MEDIA_DIR
-    MEDIA_URL = MEDIA_URL
+    def cover(self, size, overwrite=True):
+        savebase = reverse(self.path, size, 'cover')
 
-    def __init__(self, pathway=None, point=(50, 50), quality=90, upload_to=".",
-                 * args, **kwargs):
+        savepath = os.path.join(MEDIA_DIR, savebase)
+        saveurl = os.path.join(MEDIA_URL, savebase)
+
+        if not overwrite:
+            if os.path.isfile(savepath):
+                return saveurl
+        pycrop.cover(self.path, size, self.point, savepath, self.quality)
+        return saveurl
+
+    def contain(self, size, overwrite=True):
+        savebase = reverse(self.path, size, 'contain')
+
+        savepath = os.path.join(MEDIA_DIR, savebase)
+        saveurl = os.path.join(MEDIA_URL, savebase)
+
+        if not overwrite:
+            if os.path.isfile(savepath):
+                return saveurl
+        pycrop.contain(self.path, size, savepath, self.quality)
+        return saveurl
+
+
+class MediaPIL(Methods):
+
+    def __init__(self, pathway=None, point=(50, 50), quality=90,
+                 upload_to="uploads", *args, **kwargs):
         self.pathway = pathway
         self.set_path(pathway)
         self.point = tuple(point)
         self.quality = quality
-        self.upload_to = upload_to
 
     def set_path(self, pathway):
         if pathway:
@@ -95,19 +117,8 @@ class MediaPIL(ImagePIL):
         return json.dumps(self.to_json(), ensure_ascii=False)
 
     def get(self, method, *args, **kwargs):
-        if self.pathway:
-            overwrite = kwargs.get('overwrite', False)
-            kwargs['overwrite'] = overwrite
 
-            r = getattr(self, method)(*args, **kwargs)
-            if r[0]:
-                return self.path_to_url(r[1])
-        return ""
+        overwrite = kwargs.get('overwrite', False)
+        kwargs['overwrite'] = overwrite
 
-
-if __name__ == '__main__':
-    # from apps.pymedia.mediaPIL import MediaPIL
-    img = MediaPIL('img.jpg')
-    # img.contain((300, 230))
-    # img.cover((300, 230), point=(50, 70))
-    # print(getattr(img, 'path'))
+        return getattr(self, method)(*args, **kwargs)

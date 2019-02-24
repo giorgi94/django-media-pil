@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(
     name='django-media-pil',
-    version='0.3',
+    version='1.0.0',
     packages=['djangomediapil'],
     description='Simple widget for image manipulations by pillow in the Django Admin',
     include_package_data=True,
@@ -18,7 +18,8 @@ setup(
     platforms=['OS Independent'],
     license='MIT',
     install_requires=[
-        'Django>=1.11',
-        'Pillow>=5.3.0'
+        'Django>=2.1.0',
+        'Pillow>=5.3.0',
+        'pycrop>=1.0.1'
     ]
 )

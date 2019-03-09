@@ -1,6 +1,10 @@
-# Django-media-pil
+# DjangoMediaPil
 
-Simple widget for image manipulations by pillow in the Django Admin.
+1. What it does
+3. Installation
+
+## What it does
+Privieds custom widget and field to handle image in django.
 
 
 ## Installation
@@ -8,5 +12,11 @@ Simple widget for image manipulations by pillow in the Django Admin.
 To install the package by `pip` run following command
 
 ```sh
-$ pip install git+https://github.com/giorgi94/django-media-pil.git
+pip install django-media-pil
+```
+
+or
+
+```sh
+$ pip install git+https://github.com/giorgi94/django-media-pil
 ```
